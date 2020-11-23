@@ -1,13 +1,13 @@
-from subparser import Prog
+from subparser import cli
 
-
-prog = Prog(
+@cli(
     name='example',
     description='An example command.'
 )
+def example():
+    pass
 
-
-@prog.command(help="Command help.", param="Param help.", flag="Activate flag.")
+@example.command(help="Command help.", param="Param help.", flag="Activate flag.")
 def test(param: str = None, flag: bool = True):
     print("Invoked command test")
 
@@ -16,13 +16,12 @@ def test(param: str = None, flag: bool = True):
     if flag:
         print("Flag activated.")
 
-
-@prog.command
+@example.command
 def test2():
     print("Invoked command test2.")
 
 
-@prog.command(
+@example.command(
     help="Add both args.",
     a="First number to add", b="Second number to add"
 )
@@ -30,4 +29,4 @@ def add(a: int, b: int):
     print(a + b)
 
 if __name__ == "__main__":
-    prog.main()
+    example.main()
