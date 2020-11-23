@@ -15,10 +15,10 @@ class Prog:
     def main(self):
         args = self._parser.parse_args()
 
-        if hasattr(args, 'func'):
-            a = vars(args).copy()
-            del(a['func'])
-            args.func(**a)
+        if hasattr(args, '__func__'):
+            args.__func__(
+                **{k: a for k, a in vars(args).items() if not k.startswith('__')}
+            )
         else:
             self._parser.print_usage()
 
@@ -51,7 +51,7 @@ class Prog:
                     **k,
                 )
 
-            parser.set_defaults(func=f)
+            parser.set_defaults(__func__=f)
 
             return f
 
