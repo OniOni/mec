@@ -59,3 +59,13 @@ class Prog:
             return inner(args[0])
 
         return inner
+
+
+def cli(name: str, description: str):
+    prog = Prog(name, description)
+
+    def inner(f):
+        # Do the add args dance here
+        return prog
+
+    return inner
