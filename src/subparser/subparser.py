@@ -27,8 +27,6 @@ class Prog:
             parser = self._subparsers.add_parser(f.__name__, help=kwargs.get('help', None))
 
             for name, param in signature(f).parameters.items():
-                # import ipdb; ipdb.set_trace()
-
                 k = {
                     "default": param.default,
                     "help": kwargs.get(name, None)
@@ -55,6 +53,8 @@ class Prog:
 
             return f
 
+        # If we only have one argument and it's a callable, we assume the
+        # decorator is being used without arguments.
         if len(args) == 1 and callable(args[0]):
             return inner(args[0])
 
