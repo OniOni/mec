@@ -4,8 +4,8 @@ from subparser import cli
     name='example',
     description='An example command.'
 )
-def example():
-    pass
+def example(v: bool = True):
+    return {'verbose': v}
 
 @example.command(help="Command help.", param="Param help.", flag="Activate flag.")
 def test(param: str = None, flag: bool = True):
@@ -15,6 +15,9 @@ def test(param: str = None, flag: bool = True):
         print(f"with param: {param}")
     if flag:
         print("Flag activated.")
+    if example.ctx['verbose']:
+        print("Verbose")
+
 
 @example.command
 def test2():
