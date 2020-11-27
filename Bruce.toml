@@ -1,0 +1,51 @@
+[glob.py]
+fingerprintingstrategy = 'content'
+glob = '**/*.py'
+exclude = ['.*venv.*', '\.bruce/.*']
+
+[file.reqs]
+fingerprintingstrategy = 'content'
+path = 'dev-requirements.txt'
+
+[file.venv]
+path = 'venv'
+
+[task.clean]
+cmd = 'rm -rf venv/ __pycache__/ build/ dist/ *egg*'
+watch = ['venv']
+
+[task.init]
+cmd = 'python3 -m venv venv'
+watch = ['venv']
+
+[task.deps]
+cmd = 'venv/bin/pip install -r dev-requirements.txt'
+watch = ['reqs']
+upstream = ['init']
+
+[task.black]
+cmd = 'venv/bin/black src/ --exclude venv bruce.py'
+watch = ['py']
+upstream = ['deps']
+
+[task.isort]
+cmd = 'venv/bin/isort --skip venv --src src/ src/'
+watch = ['py']
+upstream = ['deps']
+
+[task.mypy]
+cmd = 'venv/bin/mypy --strict src/*/*.py'
+watch = ['py']
+upstream = ['black', 'isort']
+
+[group.qa]
+upstream = ['black', 'isort']
+
+[task.wheel]
+upstream = ['deps']
+watch = ['py']
+cmd = 'venv/bin/python setup.py bdist_wheel'
+
+[task.publish]
+upstream = ['wheel']
+cmd = 'venv/bin/twine upload dist/*'
