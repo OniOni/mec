@@ -1,11 +1,10 @@
 from subparser import cli
 
-@cli(
-    name='example',
-    description='An example command.'
-)
+
+@cli(name="example", description="An example command.")
 def example(v: bool = True):
-    return {'verbose': v}
+    return {"verbose": v}
+
 
 @example.command(help="Command help.", param="Param help.", flag="Activate flag.")
 def test(param: str = None, flag: bool = True):
@@ -15,7 +14,7 @@ def test(param: str = None, flag: bool = True):
         print(f"with param: {param}")
     if flag:
         print("Flag activated.")
-    if example.ctx['verbose']:
+    if example.ctx["verbose"]:
         print("Verbose")
 
 
@@ -25,11 +24,11 @@ def test2():
 
 
 @example.command(
-    help="Add both args.",
-    a="First number to add", b="Second number to add"
+    help="Add both args.", a="First number to add", b="Second number to add"
 )
 def add(a: int, b: int):
     print(a + b)
+
 
 if __name__ == "__main__":
     example.main()

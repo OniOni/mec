@@ -1,14 +1,10 @@
 import argparse
-from inspect import signature, Parameter
+from inspect import Parameter, signature
 
 
 class Prog:
-
     def __init__(self, name: str, description: str):
-        self._parser = argparse.ArgumentParser(
-            prog=name,
-            description=description
-        )
+        self._parser = argparse.ArgumentParser(prog=name, description=description)
 
         self._global_args = []
         self._subparsers = self._parser.add_subparsers()
@@ -16,27 +12,28 @@ class Prog:
     def main(self):
         args = self._parser.parse_args()
 
-        if hasattr(args, '__func__'):
-            self.ctx = self.__main__(**{
-                k: a
-                for k, a in vars(args).items()
-                if not k.startswith('__') and k in self._global_args
-            })
-            args.__func__(**{
-                k: a
-                for k, a in vars(args).items()
-                if not k.startswith('__') and k not in self._global_args
-            })
+        if hasattr(args, "__func__"):
+            self.ctx = self.__main__(
+                **{
+                    k: a
+                    for k, a in vars(args).items()
+                    if not k.startswith("__") and k in self._global_args
+                }
+            )
+            args.__func__(
+                **{
+                    k: a
+                    for k, a in vars(args).items()
+                    if not k.startswith("__") and k not in self._global_args
+                }
+            )
         else:
             self._parser.print_usage()
 
     def _get_args(self, f: callable, info: dict):
         ret = {}
         for name, param in signature(f).parameters.items():
-            k = {
-                "default": param.default,
-                "help": info.get(name, None)
-            }
+            k = {"default": param.default, "help": info.get(name, None)}
 
             k["action"] = "store"
             if param.annotation is bool:
@@ -59,10 +56,11 @@ class Prog:
 
         return ret
 
-
     def command(self, *args, **kwargs):
         def inner(f):
-            parser = self._subparsers.add_parser(f.__name__, help=kwargs.get('help', None))
+            parser = self._subparsers.add_parser(
+                f.__name__, help=kwargs.get("help", None)
+            )
 
             for _, (name, k) in self._get_args(f, kwargs).items():
                 parser.add_argument(name, **k)
