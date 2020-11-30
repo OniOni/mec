@@ -1,3 +1,5 @@
+from typing import List
+
 from subparser import cli
 
 
@@ -28,6 +30,11 @@ def test2():
 )
 def add(a: int, b: int):
     print(a + b)
+
+
+@example.command
+def nargs(a: List[str]):
+    print(f"Got {len(a)} args: {a}")
 
 
 if __name__ == "__main__":

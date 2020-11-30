@@ -1,5 +1,6 @@
 import argparse
 from inspect import Parameter, signature
+from typing import List, get_args, get_origin
 
 
 class Prog:
@@ -42,6 +43,9 @@ class Prog:
                     k["action"] = "store_true"
                 else:
                     k["action"] = "store_false"
+            elif get_origin(param.annotation) is list:
+                k["nargs"] = "+"
+                k["type"] = get_args(param.annotation)[0]
             else:
                 k["type"] = param.annotation
 
