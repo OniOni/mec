@@ -3,12 +3,12 @@ Mat's Easy CLI
 
 ### Example
 ```python
+from typing import List
+
 from subparser import cli
 
-@cli(
-    name='example',
-    description='An example command.'
-)
+
+@cli(name='example', description='An example command.')
 def example(v: bool = True):
     return {'verbose': v}
 
@@ -30,11 +30,16 @@ def test2():
 
 
 @example.command(
-    help="Add both args.",
-    a="First number to add", b="Second number to add"
+    help="Add both args.", a="First number to add", b="Second number to add"
 )
 def add(a: int, b: int):
     print(a + b)
+
+
+@example.command
+def nargs(a: List[str]):
+    print(f"Got {len(a)} args: {a}")
+
 
 if __name__ == "__main__":
     example.main()
@@ -82,6 +87,14 @@ $ ./venv/bin/python src/subparser/example.py add 31 11
 $ ./venv/bin/python src/subparser/example.py add a b
 usage: example add [-h] a b
 example add: error: argument a: invalid int value: 'a'
+```
+
+- Invoking a command with append style args:
+```
+$ ./venv/bin/python src/subparser/example.py nargs a b c
+Got 3 args: ['a', 'b', 'c']
+$ ./venv/bin/python src/subparser/example.py nargs 42
+Got 1 args: ['42']
 ```
 
 - Subcommand help:
